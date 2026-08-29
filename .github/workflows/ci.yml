@@ -68,3 +68,13 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Lint, static analysis, unit tests, coverage, and build
         run: ./gradlew ktlintCheck detekt lintDebug testDebugUnitTest koverVerify assembleDebug assembleRelease
+      # One `run:` covers six tools, and the console only shows whichever failed
+      # first. The reports say which rule, which file and - for coverage - which
+      # lines, none of which survives the runner.
+      - name: Upload the reports on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gradle-reports
+          path: wear/build/reports/
+          if-no-files-found: ignore
