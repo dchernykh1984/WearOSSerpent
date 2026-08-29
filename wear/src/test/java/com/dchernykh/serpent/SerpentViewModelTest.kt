@@ -189,6 +189,28 @@ class SerpentViewModelTest {
         }
 
     @Test
+    fun `paces the game by the level that was chosen`() =
+        runTest(dispatcher) {
+            // The whole point of the difficulty setting: on Fast the snake has
+            // already moved by the time Normal would still be waiting.
+            val store = FakeRecordStore(level = SpeedLevel.FAST)
+            val model = viewModel(store)
+            advanceUntilIdle()
+            model.startGame()
+            val head =
+                model.uiState.value.snake
+                    .first()
+
+            advanceTimeBy(SpeedLevel.FAST.baseMs + 1)
+            val movedOnFast =
+                model.uiState.value.snake
+                    .first()
+
+            assertNotEquals(head, movedOnFast)
+            assertTrue(SpeedLevel.FAST.baseMs < SpeedLevel.NORMAL.baseMs)
+        }
+
+    @Test
     fun `ignores steering when no game is on`() =
         runTest(dispatcher) {
             val model = viewModel()
