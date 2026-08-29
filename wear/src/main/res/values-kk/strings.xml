@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Жылан</string>
+    <string name="score_value">Ұпай %1$d</string>
+    <string name="best_value">Рекорд %1$d</string>
+    <string name="play">Ойнау</string>
+    <string name="resume">Жалғастыру</string>
+    <string name="again">Қайта</string>
+    <string name="paused">Кідіріс</string>
+    <string name="game_over">Ойын бітті</string>
+    <string name="new_best">Жаңа рекорд</string>
+    <string name="speed">Жылдамдық</string>
+    <string name="speed_slow">Баяу</string>
+    <string name="speed_normal">Қалыпты</string>
+    <string name="speed_fast">Жылдам</string>
+    <string name="hint">Сипау не көрсеткі</string>
+    <string name="steer_up">Жоғары</string>
+    <string name="steer_down">Төмен</string>
+    <string name="steer_left">Солға</string>
+    <string name="steer_right">Оңға</string>
+    <string name="pause">Кідіріс</string>
+</resources>

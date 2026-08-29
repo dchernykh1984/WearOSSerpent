@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Wąż</string>
+    <string name="score_value">Wynik %1$d</string>
+    <string name="best_value">Rekord %1$d</string>
+    <string name="play">Graj</string>
+    <string name="resume">Wznów</string>
+    <string name="again">Jeszcze raz</string>
+    <string name="paused">Pauza</string>
+    <string name="game_over">Koniec gry</string>
+    <string name="new_best">Nowy rekord</string>
+    <string name="speed">Prędkość</string>
+    <string name="speed_slow">Wolno</string>
+    <string name="speed_normal">Normalnie</string>
+    <string name="speed_fast">Szybko</string>
+    <string name="hint">Przesuń lub strzałki</string>
+    <string name="steer_up">Góra</string>
+    <string name="steer_down">Dół</string>
+    <string name="steer_left">Lewo</string>
+    <string name="steer_right">Prawo</string>
+    <string name="pause">Pauza</string>
+</resources>
