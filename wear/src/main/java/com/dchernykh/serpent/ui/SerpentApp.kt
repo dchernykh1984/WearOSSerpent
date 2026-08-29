@@ -52,7 +52,7 @@ fun SerpentApp(viewModel: SerpentViewModel) {
     val container = LocalWindowInfo.current.containerSize
     val screenSize = minOf(container.width, container.height)
     val board = remember(screenSize) { boardLayout(screenSize, GRID_CELLS) }
-    val controls = remember(board) { controlLayout(screenSize, board) }
+    val controls = remember(screenSize, board) { controlLayout(screenSize, board) }
     // The four arrows share one size so they read as a set rather than as four
     // unrelated marks, and pause is drawn at the same weight for the same reason.
     val metrics = remember(controls) { arrowMetrics(controls.arrows) }
