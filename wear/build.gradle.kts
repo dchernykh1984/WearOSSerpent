@@ -150,26 +150,19 @@ listOf(
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-
+    // Only what the scaffold itself uses. The game brings its own - a view
+    // model, coroutines for the tick loop, a DataStore for the records - along
+    // with the code that needs them, so nothing here is a dependency the APK
+    // carries and no line of source justifies.
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.lifecycle.runtime.compose)
-    implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.wear.compose.material3)
-    implementation(libs.androidx.wear.compose.foundation)
     implementation(libs.androidx.wear.tooling.preview)
-
-    implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.datastore.preferences)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     testImplementation(libs.junit)
-    testImplementation(libs.kotlin.test)
-    testImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
