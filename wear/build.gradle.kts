@@ -151,6 +151,10 @@ dependencies {
     // with the code that needs them, so nothing here is a dependency the APK
     // carries and no line of source justifies.
     implementation(libs.androidx.activity.compose)
+    // Box, fillMaxSize and background are imported by name from
+    // androidx.compose.foundation, so it is declared rather than left to arrive
+    // through Wear Compose - which is free to stop bringing it in any release.
+    implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.wear.compose.material3)
