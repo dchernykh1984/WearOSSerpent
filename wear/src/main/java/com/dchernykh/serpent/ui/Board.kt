@@ -42,9 +42,10 @@ fun BoardCanvas(
             cornerRadius = CornerRadius(edge * 2),
         )
 
-        // Painted tail first so that the head, the one cell worth finding at a
-        // glance, is drawn over its neighbour rather than under it.
-        for (i in snake.indices.reversed()) {
+        // Order does not matter: two segments can never share a cell - that is
+        // what ends a game - and each rect is inset inside its own, so nothing
+        // ever paints over anything else.
+        for (i in snake.indices) {
             val rect = cellRect(board, snake[i].x, snake[i].y, CELL_INSET)
             drawRoundRect(
                 color = if (i == 0) ColorSnakeHead else ColorSnake,
