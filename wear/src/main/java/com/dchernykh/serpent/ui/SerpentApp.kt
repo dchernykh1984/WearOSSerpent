@@ -79,7 +79,19 @@ fun SerpentApp(viewModel: SerpentViewModel) {
                 Modifier
                     .fillMaxSize()
                     .background(ColorBackground)
-                    .steering(enabled = state.screen == Screen.PLAYING, onTurn = viewModel::turn),
+                    .swipes(state.screen) { direction ->
+                        when (state.screen) {
+                            Screen.PLAYING -> viewModel.turn(direction)
+                            // Up or down on the start screen walks the difficulty,
+                            // which is the second way the original offered to
+                            // change it and the one that needs no aiming.
+                            Screen.START ->
+                                if (direction == Direction.UP || direction == Direction.DOWN) {
+                                    viewModel.cycleLevel()
+                                }
+                            Screen.PAUSED, Screen.OVER -> Unit
+                        }
+                    },
         ) {
             BoardCanvas(board = board, snake = state.snake, food = state.food, modifier = Modifier.fillMaxSize())
 
@@ -113,37 +125,39 @@ private fun KeepScreenOnWhile(playing: Boolean) {
 }
 
 /**
- * Swipe steering, over the whole screen.
+ * Swipes, over the whole screen: steering during a game, and the difficulty on the
+ * start screen.
  *
  * A drag is read once, on the first movement that clears the touch slop, and the
  * longer axis decides: a swipe is never exactly straight, and waiting for the
  * finger to lift would turn the snake a moment too late to be any use.
+ *
+ * Keyed on [screen] so that [onSwipe] is read afresh whenever the screen changes.
+ * A pointerInput block keyed on Unit would hold on to the very first one for the
+ * life of the app, and every swipe would go on being handled as though the start
+ * screen were still in front.
  */
-private fun Modifier.steering(
-    enabled: Boolean,
-    onTurn: (Direction) -> Unit,
+private fun Modifier.swipes(
+    screen: Screen,
+    onSwipe: (Direction) -> Unit,
 ): Modifier =
-    if (!enabled) {
-        this
-    } else {
-        this.pointerInput(Unit) {
-            var turned = false
-            detectDragGestures(
-                onDragStart = { turned = false },
-                onDragEnd = { turned = false },
-                onDragCancel = { turned = false },
-            ) { change, drag ->
-                change.consume()
-                if (!turned) {
-                    turned = true
-                    onTurn(
-                        if (abs(drag.x) > abs(drag.y)) {
-                            if (drag.x > 0) Direction.RIGHT else Direction.LEFT
-                        } else {
-                            if (drag.y > 0) Direction.DOWN else Direction.UP
-                        },
-                    )
-                }
+    pointerInput(screen) {
+        var handled = false
+        detectDragGestures(
+            onDragStart = { handled = false },
+            onDragEnd = { handled = false },
+            onDragCancel = { handled = false },
+        ) { change, drag ->
+            change.consume()
+            if (!handled) {
+                handled = true
+                onSwipe(
+                    if (abs(drag.x) > abs(drag.y)) {
+                        if (drag.x > 0) Direction.RIGHT else Direction.LEFT
+                    } else {
+                        if (drag.y > 0) Direction.DOWN else Direction.UP
+                    },
+                )
             }
         }
     }
