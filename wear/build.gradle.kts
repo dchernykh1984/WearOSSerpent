@@ -110,15 +110,11 @@ kover {
             excludes {
                 // Generated code is not meaningful to cover.
                 classes("*.BuildConfig", "*.R", "*.R$*", "*ComposableSingletons*")
-                // Compose screens and the DataStore-backed store are the two
-                // places a JVM test cannot reach: one needs a composition, the
-                // other a Context. Both are exercised by the instrumented smoke
-                // test instead. Everything else - the rule set, the pacing, the
-                // record decision, the round-screen geometry and the view model
-                // that drives them - is plain Kotlin and is held to the bound
-                // below.
-                packages("com.dchernykh.serpent.ui", "com.dchernykh.serpent.store")
-                classes("com.dchernykh.serpent.MainActivity")
+                // The activity is the one thing here a JVM test cannot reach; the
+                // instrumented test covers it by launching it. Whatever else ends
+                // up out of a unit test's reach earns its own exclusion when it
+                // is written, not before.
+                classes("com.dchernykh.serpent.MainActivity*")
             }
         }
         verify {
