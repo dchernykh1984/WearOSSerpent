@@ -137,13 +137,21 @@ kover {
             excludes {
                 // Generated code is not meaningful to cover.
                 classes("*.BuildConfig", "*.R", "*.R$*", "*ComposableSingletons*")
+                // The Compose screens and the DataStore-backed record store are
+                // the two things a JVM test cannot reach: one needs a composition,
+                // the other a Context. The instrumented test launches the app and
+                // walks the screens to cover them instead.
+                packages("com.dchernykh.serpent.ui", "com.dchernykh.serpent.store")
                 classes("com.dchernykh.serpent.MainActivity*")
             }
         }
         verify {
             rule {
-                // Nothing but the scaffold exists yet, so the bound stays at 0.
-                minBound(0)
+                // What is left is the rule set, the pacing, the record decision,
+                // the round-screen geometry and the view model that drives them -
+                // all plain Kotlin, and none of it with any excuse for being
+                // uncovered. The suite currently sits at 97%.
+                minBound(80)
             }
         }
     }
