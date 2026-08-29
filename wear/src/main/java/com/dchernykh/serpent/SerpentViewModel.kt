@@ -61,22 +61,32 @@ class SerpentViewModel(
     private var game: GameState? = null
     private var loop: Job? = null
 
+    // Every touch of the settings goes through this, each waiting on the one
+    // before. Without it the first read - which starts as soon as the view model
+    // does - can finish after a tap that changed the level, and quietly put the
+    // stored level back over the one the player just chose.
+    private var settings: Job = Job().apply { complete() }
+
     init {
         // The game reopens the way it was left, which means reading the level
         // before anything can be drawn against the wrong record.
-        viewModelScope.launch {
-            val level = store.readLevel()
-            _uiState.update { it.copy(level = level, best = store.readBest(level)) }
-        }
+        settings =
+            viewModelScope.launch {
+                val level = store.readLevel()
+                _uiState.update { it.copy(level = level, best = store.readBest(level)) }
+            }
     }
 
     /** Walk to the next difficulty, remember it, and load that level's record. */
     fun cycleLevel() {
         val next = _uiState.value.level.next
-        viewModelScope.launch {
-            store.writeLevel(next)
-            _uiState.update { it.copy(level = next, best = store.readBest(next)) }
-        }
+        val previous = settings
+        settings =
+            viewModelScope.launch {
+                previous.join()
+                store.writeLevel(next)
+                _uiState.update { it.copy(level = next, best = store.readBest(next)) }
+            }
     }
 
     fun startGame() {
