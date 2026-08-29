@@ -116,7 +116,12 @@ class SerpentViewModel(
     fun showStart() {
         stopLoop()
         game = null
-        _uiState.update { it.copy(screen = Screen.START, isRecord = false) }
+        // The board is cleared with it. Without this the wreck of the last game
+        // stays on screen behind the start menu, which reads as the next game
+        // having already begun.
+        _uiState.update {
+            it.copy(screen = Screen.START, isRecord = false, snake = emptyList(), food = null)
+        }
     }
 
     override fun onCleared() {
