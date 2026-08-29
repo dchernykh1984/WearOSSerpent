@@ -63,6 +63,13 @@ jobs:
             | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+      # The Gradle build that runs inside the emulator step has repeatedly failed
+      # to resolve the Kotlin plugin from the plugin portal. Resolving the plugin
+      # classpath here, in a step that can be retried on its own and whose output
+      # the Gradle cache keeps, takes that network hop off the emulator's
+      # critical path.
+      - name: Warm the Gradle plugin classpath
+        run: ./gradlew --quiet help
       - name: Run the instrumented tests
         uses: reactivecircus/android-emulator-runner@v2.35.0
         with:
@@ -73,3 +80,13 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew connectedDebugAndroidTest
+      # A connected test that fails on a headless emulator leaves nothing behind
+      # to read: the console shows the assertion, the report shows which device
+      # and which of the two rows produced it.
+      - name: Upload the test report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: connected-report-${{ matrix.name }}
+          path: wear/build/reports/androidTests/connected/
+          if-no-files-found: ignore
