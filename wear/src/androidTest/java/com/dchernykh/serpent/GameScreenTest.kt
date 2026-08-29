@@ -6,6 +6,9 @@ import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
+import androidx.compose.ui.test.swipeUp
+import org.junit.Assert.assertNotEquals
 import org.junit.Rule
 import org.junit.Test
 
@@ -57,6 +60,19 @@ class GameScreenTest {
         }
 
         rule.onNodeWithText(start).assertIsDisplayed()
+    }
+
+    @Test
+    fun walksTheDifficultyOnAVerticalSwipeToo() {
+        // The second way the original offered to change it: a swipe needs no
+        // aiming, which on a wrist is worth more than it sounds.
+        rule.waitUntil { speedLabels.any(::onScreen) }
+        val before = speedLabels.first(::onScreen)
+
+        rule.onNodeWithText(text(R.string.title)).performTouchInput { swipeUp() }
+        rule.waitUntil { !onScreen(before) }
+
+        assertNotEquals(before, speedLabels.first(::onScreen))
     }
 
     @Test
