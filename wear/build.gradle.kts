@@ -19,7 +19,15 @@ val keystoreFile: String? = System.getenv("KEYSTORE_FILE")
 // a monotonic value from the semantic version (major * 1000000 + minor * 1000 +
 // patch), which keeps every release strictly above the last without depending on
 // a CI run counter that resets when a workflow is renamed.
-val versionCodeBase = System.getenv("VERSION_CODE")?.toIntOrNull() ?: 1
+//
+// A VERSION_CODE that is set but unreadable is a broken release pipeline, so it
+// stops the build. Quietly falling back to 1 there would publish a release that
+// sorts below every earlier one, and Android would then refuse the update on
+// every watch that already has the app - with nothing in the logs to explain it.
+val versionCodeBase =
+    System.getenv("VERSION_CODE")?.let { raw ->
+        raw.toIntOrNull() ?: error("VERSION_CODE is set to '$raw', which is not an integer")
+    } ?: 1
 
 android {
     namespace = "com.dchernykh.serpent"
