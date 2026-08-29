@@ -162,8 +162,11 @@ dependencies {
 
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    testImplementation(libs.junit)
-
+    // The instrumented test writes `org.junit.Test` and `org.junit.Assert`, so
+    // JUnit is declared here rather than left to arrive transitively through
+    // androidx.test.ext:junit - a transitive that is free to drop it in any
+    // release, taking the test source set with it.
+    androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
 }
