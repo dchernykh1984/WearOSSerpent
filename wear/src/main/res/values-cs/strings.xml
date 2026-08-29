@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Had</string>
+    <string name="score_value">Skóre %1$d</string>
+    <string name="best_value">Rekord %1$d</string>
+    <string name="play">Hrát</string>
+    <string name="resume">Pokračovat</string>
+    <string name="again">Znovu</string>
+    <string name="paused">Pauza</string>
+    <string name="game_over">Konec hry</string>
+    <string name="new_best">Nový rekord</string>
+    <string name="speed">Rychlost</string>
+    <string name="speed_slow">Pomalu</string>
+    <string name="speed_normal">Normální</string>
+    <string name="speed_fast">Rychle</string>
+    <string name="hint">Táhni nebo šipky</string>
+    <string name="steer_up">Nahoru</string>
+    <string name="steer_down">Dolů</string>
+    <string name="steer_left">Vlevo</string>
+    <string name="steer_right">Vpravo</string>
+    <string name="pause">Pauza</string>
+</resources>

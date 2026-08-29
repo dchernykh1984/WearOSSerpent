@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Schlange</string>
+    <string name="score_value">Punkte %1$d</string>
+    <string name="best_value">Rekord %1$d</string>
+    <string name="play">Spielen</string>
+    <string name="resume">Weiter</string>
+    <string name="again">Nochmal</string>
+    <string name="paused">Pausiert</string>
+    <string name="game_over">Spiel aus</string>
+    <string name="new_best">Neuer Rekord</string>
+    <string name="speed">Tempo</string>
+    <string name="speed_slow">Langsam</string>
+    <string name="speed_normal">Normal</string>
+    <string name="speed_fast">Schnell</string>
+    <string name="hint">Wischen oder Pfeile</string>
+    <string name="steer_up">Hoch</string>
+    <string name="steer_down">Runter</string>
+    <string name="steer_left">Links</string>
+    <string name="steer_right">Rechts</string>
+    <string name="pause">Pause</string>
+</resources>
