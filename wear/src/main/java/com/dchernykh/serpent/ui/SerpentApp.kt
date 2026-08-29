@@ -50,6 +50,13 @@ fun SerpentApp(viewModel: SerpentViewModel) {
     // width and height.
     val container = LocalWindowInfo.current.containerSize
     val screenSize = minOf(container.width, container.height)
+    // Every measurement below divides the screen up, and a screen of no size
+    // divides into negative boxes rather than into nothing. It should never
+    // happen - a window has a size by the time it composes - but one frame of a
+    // board drawn off the top left corner is not worth the line it costs to rule
+    // out.
+    if (screenSize <= 0) return
+
     val board = remember(screenSize) { boardLayout(screenSize, GRID_CELLS) }
     val controls = remember(screenSize, board) { controlLayout(screenSize, board) }
     // The four arrows share one size so they read as a set rather than as four
