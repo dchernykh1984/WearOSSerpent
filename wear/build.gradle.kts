@@ -50,6 +50,16 @@ android {
     }
 
     buildTypes {
+        debug {
+            // A debug build carries its own applicationId, so it installs beside
+            // a release one instead of colliding with it. Without the suffix,
+            // pushing a debug build to a watch that already has the published app
+            // fails outright on the signature mismatch, and the only way through
+            // is to uninstall the app - and with it the high scores that are the
+            // most interesting thing to test against.
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
         release {
             // Shrink and obfuscate with R8, and strip unused resources. APK size
             // matters more on a watch than on a phone: watches have far less
