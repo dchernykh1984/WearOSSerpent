@@ -1,7 +1,6 @@
 package com.dchernykh.serpent
 
 import android.os.Bundle
-import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -24,10 +23,6 @@ import androidx.wear.tooling.preview.devices.WearDevices
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // A game outlasts the watch's display timeout by a wide margin, and a
-        // screen that blacks out mid-run is a lost game. The flag is scoped to
-        // this window, so it lapses the moment the app is left.
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContent { SerpentApp() }
     }
 }
