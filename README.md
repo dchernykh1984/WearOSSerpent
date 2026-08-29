@@ -92,6 +92,7 @@ wear/                                  the one module: the watch app is the prod
   src/main/res/values*/strings.xml     the screen strings, a table per language
   src/main/res/xml/                    what backup and device transfer may take
   src/main/res/mipmap-*/               the adaptive launcher icon
+tools/make-launcher-icons.sh           regenerates that icon from the Zepp OS one
   src/test/                            JVM unit tests - the rules and the geometry
   src/androidTest/                     instrumented tests - what needs a real device
 config/detekt/detekt.yml               static-analysis overrides
