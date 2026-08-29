@@ -15,13 +15,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.Text
 import com.dchernykh.serpent.layout.BOARD_EDGE
 import com.dchernykh.serpent.layout.Board
 import com.dchernykh.serpent.layout.SCREEN_PADDING
 import com.dchernykh.serpent.layout.centeredBox
 import kotlin.math.roundToInt
+import com.dchernykh.serpent.layout.Box as LayoutBox
 
 /**
  * The menus: a vertical stack of lines and buttons, centred on the board under a
@@ -77,10 +77,11 @@ fun MenuOverlay(
     Box(
         modifier =
             Modifier
-                .absoluteBox(
-                    com.dchernykh.serpent.layout
-                        .Box(board.x, panelTop, board.size, panelHeight),
-                ).clip(RoundedCornerShape((BOARD_EDGE * 4).dp))
+                .absoluteBox(LayoutBox(board.x, panelTop, board.size, panelHeight))
+                // In pixels, like every other measurement here. As dp it would be
+                // scaled by the watch's density and come out twice as round as the
+                // frame it sits inside.
+                .clip(RoundedCornerShape(with(LocalDensity.current) { (BOARD_EDGE * 4).toDp() }))
                 // Not opaque: seeing the wreck of the game under the panel is how
                 // you find out what you ran into.
                 .background(ColorBackground.copy(alpha = 210f / 255f)),
@@ -102,7 +103,7 @@ fun MenuOverlay(
 
 @Composable
 private fun MenuLine(
-    box: com.dchernykh.serpent.layout.Box,
+    box: LayoutBox,
     color: Color,
     text: String,
 ) {
@@ -119,7 +120,7 @@ private fun MenuLine(
 
 @Composable
 private fun MenuButton(
-    box: com.dchernykh.serpent.layout.Box,
+    box: LayoutBox,
     text: String,
     onClick: () -> Unit,
 ) {
