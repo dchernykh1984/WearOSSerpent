@@ -1,0 +1,33 @@
+# detekt configuration. Overrides layer on top of detekt's bundled defaults
+# (buildUponDefaultConfig = true in the module build script).
+
+complexity:
+  LongMethod:
+    # Declarative @Composable UI functions are legitimately long.
+    ignoreAnnotated: ['Composable']
+  LongParameterList:
+    functionThreshold: 7
+    constructorThreshold: 7
+    ignoreAnnotated: ['Composable']
+
+naming:
+  FunctionNaming:
+    # @Composable functions are PascalCase by convention.
+    ignoreAnnotated: ['Composable']
+
+style:
+  MagicNumber:
+    # The layout is a pile of proportions - how much of the top segment the score
+    # takes, how far an arrow reaches into its box - and each one is named and
+    # explained where it is declared. Hoisting them into constants a second time
+    # would add names without adding meaning.
+    active: false
+  ReturnCount:
+    # Guard-clause early returns are how the rule set stays readable.
+    max: 3
+  UnusedPrivateMember:
+    # A @Preview function is called by Android Studio's preview renderer, never
+    # from code, so every one of them looks unused to static analysis. Only
+    # @Preview is exempted, not @Composable: a composable nothing calls really is
+    # dead and should still be reported.
+    ignoreAnnotated: ['Preview']
