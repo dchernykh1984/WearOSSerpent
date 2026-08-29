@@ -1,12 +1,12 @@
 name: Instrumented tests
 
-# Runs the on-device tests on Wear OS emulators. Heavier than the unit-test gate,
-# so it is opt-in (manual + on PRs).
+# Runs the on-device tests on Wear OS emulators, on every pull request and on
+# demand.
 #
-# What it is for: the two places a JVM test cannot reach - the Compose screens,
-# which need a real composition, and the DataStore-backed record store, which
-# needs a Context. The rules, the pacing and the geometry are plain Kotlin and are
-# covered far more cheaply by the unit tests.
+# What it is for: whatever a JVM test cannot reach because it needs a real device
+# - a composition, a Context, the watch's own resource resolution. Anything that
+# is plain Kotlin belongs in the unit tests, which cost seconds rather than the
+# minutes an emulator takes to boot.
 on:
   workflow_dispatch:
   pull_request:
