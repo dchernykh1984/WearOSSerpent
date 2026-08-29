@@ -102,8 +102,8 @@ The rule that shapes it: anything a test can reach without a device - the rule s
 the pacing, the record decision, the round-screen geometry - is a plain Kotlin class
 outside the Compose layer, and `koverVerify` holds it to a coverage floor. Only what
 genuinely needs a device is exempt from that floor, and each exemption is written
-down where it is made, with the instrumented test that covers it instead. (The floor
-is 0 until the game itself lands; there is nothing here yet to hold up.)
+down where it is made, with the instrumented test that covers it instead. The floor
+is 80; the suite currently sits at 97%.
 
 ## Pre-commit hooks (contributors)
 
