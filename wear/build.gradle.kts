@@ -94,6 +94,15 @@ android {
         compose = true
     }
 
+    androidResources {
+        // Builds res/xml/locales_config.xml from the values-* folders and points
+        // the manifest at it, which is what puts the app in the watch's per-app
+        // language list on Android 13 and later. Without it the eleven
+        // translations can only ever be reached by changing the whole watch's
+        // language, which nobody does to play a game in Czech.
+        generateLocaleConfig = true
+    }
+
     lint {
         // Fail the build on lint errors; warnings stay non-fatal for now and can
         // be promoted to errors once the codebase stabilises. Android Lint ships
@@ -128,20 +137,12 @@ kover {
             excludes {
                 // Generated code is not meaningful to cover.
                 classes("*.BuildConfig", "*.R", "*.R$*", "*ComposableSingletons*")
-                // The activity is the one thing here a JVM test cannot reach; the
-                // instrumented test covers it by launching it. Whatever else ends
-                // up out of a unit test's reach earns its own exclusion when it
-                // is written, not before.
                 classes("com.dchernykh.serpent.MainActivity*")
             }
         }
         verify {
             rule {
-                // Nothing but the scaffold exists yet, so the bound stays at 0 to
-                // keep it green. It is raised to 80 in the same change that lands
-                // the game: the rule set, the pacing, the record decision and the
-                // round-screen geometry are all plain Kotlin with no excuse for
-                // being uncovered.
+                // Nothing but the scaffold exists yet, so the bound stays at 0.
                 minBound(0)
             }
         }
@@ -168,11 +169,12 @@ listOf(
 }
 
 dependencies {
-    // Only what the scaffold itself uses. The game brings its own - a view
-    // model, coroutines for the tick loop, a DataStore for the records - along
-    // with the code that needs them, so nothing here is a dependency the APK
-    // carries and no line of source justifies.
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    // The tick loop and the record store are both suspending.
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.datastore.preferences)
     // Box, fillMaxSize and background are imported by name from
     // androidx.compose.foundation, so it is declared rather than left to arrive
     // through Wear Compose - which is free to stop bringing it in any release.
@@ -183,6 +185,13 @@ dependencies {
     implementation(libs.androidx.wear.tooling.preview)
 
     debugImplementation(libs.androidx.compose.ui.tooling)
+    // createAndroidComposeRule needs an activity it can host; this supplies the
+    // empty one, in the debug manifest only so it never reaches a release APK.
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    testImplementation(libs.junit)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlinx.coroutines.test)
 
     // The instrumented test writes `org.junit.Test` and `org.junit.Assert`, so
     // JUnit is declared here rather than left to arrive transitively through
@@ -191,4 +200,5 @@ dependencies {
     androidTestImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }
