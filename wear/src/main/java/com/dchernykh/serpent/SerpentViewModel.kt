@@ -131,11 +131,14 @@ class SerpentViewModel(
                 while (isActive) {
                     val before = game ?: return@launch
                     delay(_uiState.value.level.tickInterval(before.score))
+                    // Checked after the delay, not before it: a pause during the
+                    // wait must not be answered with a tick taken anyway, which
+                    // would move the snake behind the pause panel.
+                    if (_uiState.value.screen != Screen.PLAYING) return@launch
                     // The turn a finger made during the delay is on `game`, not on
                     // the copy this iteration started with, so the tick is taken
                     // from whatever is current at the moment it fires.
                     val after = (game ?: return@launch).stepped(random)
-                    if (_uiState.value.screen != Screen.PLAYING) return@launch
                     game = after
                     _uiState.update {
                         it.copy(score = after.score, snake = after.snake, food = after.food)
