@@ -22,10 +22,8 @@ import androidx.wear.compose.material3.MaterialTheme
 import androidx.wear.compose.material3.Text
 import com.dchernykh.serpent.R
 import com.dchernykh.serpent.Screen
-import com.dchernykh.serpent.SerpentUiState
 import com.dchernykh.serpent.SerpentViewModel
 import com.dchernykh.serpent.game.Direction
-import com.dchernykh.serpent.layout.Board
 import com.dchernykh.serpent.layout.Controls
 import com.dchernykh.serpent.layout.GRID_CELLS
 import com.dchernykh.serpent.layout.arrowMetrics
@@ -66,13 +64,7 @@ fun SerpentApp(viewModel: SerpentViewModel) {
     // which is also the one thing a player pressing Back mid-game could want. From
     // a menu it steps back towards the start screen, and from the start screen it
     // is left alone so that the watch closes the app as it does any other.
-    BackHandler(enabled = state.screen != Screen.START) {
-        when (state.screen) {
-            Screen.PLAYING -> viewModel.pauseGame()
-            Screen.PAUSED, Screen.OVER -> viewModel.showStart()
-            Screen.START -> Unit
-        }
-    }
+    BackHandler(enabled = state.screen != Screen.START) { goBack(state.screen, viewModel) }
 
     MaterialTheme {
         Box(
@@ -80,19 +72,7 @@ fun SerpentApp(viewModel: SerpentViewModel) {
                 Modifier
                     .fillMaxSize()
                     .background(ColorBackground)
-                    .swipes(state.screen) { direction ->
-                        when (state.screen) {
-                            Screen.PLAYING -> viewModel.turn(direction)
-                            // Up or down on the start screen walks the difficulty,
-                            // which is the second way the original offered to
-                            // change it and the one that needs no aiming.
-                            Screen.START ->
-                                if (direction == Direction.UP || direction == Direction.DOWN) {
-                                    viewModel.cycleLevel()
-                                }
-                            Screen.PAUSED, Screen.OVER -> Unit
-                        }
-                    },
+                    .swipes(state.screen) { steer(state.screen, it, viewModel) },
         ) {
             BoardCanvas(board = board, snake = state.snake, food = state.food, modifier = Modifier.fillMaxSize())
 
@@ -101,13 +81,40 @@ fun SerpentApp(viewModel: SerpentViewModel) {
                 SteeringControls(controls, metrics, viewModel)
             }
 
-            when (state.screen) {
-                Screen.PLAYING -> Unit
-                Screen.START -> StartMenu(screenSize, board, menu, state, viewModel)
-                Screen.PAUSED -> PausedMenu(screenSize, board, menu, viewModel)
-                Screen.OVER -> GameOverMenu(screenSize, board, menu, state, viewModel)
-            }
+            Menus(screenSize, board, menu, state, viewModel)
         }
+    }
+}
+
+/** What Back does, which depends on where it was pressed. */
+private fun goBack(
+    screen: Screen,
+    viewModel: SerpentViewModel,
+) {
+    when (screen) {
+        Screen.PLAYING -> viewModel.pauseGame()
+        Screen.PAUSED, Screen.OVER -> viewModel.showStart()
+        Screen.START -> Unit
+    }
+}
+
+/**
+ * What a swipe does, which also depends on where it was made: it steers during a
+ * game, and up or down on the start screen walks the difficulty - the second way
+ * the original offered to change it, and the one that needs no aiming.
+ */
+private fun steer(
+    screen: Screen,
+    direction: Direction,
+    viewModel: SerpentViewModel,
+) {
+    when (screen) {
+        Screen.PLAYING -> viewModel.turn(direction)
+        Screen.START ->
+            if (direction == Direction.UP || direction == Direction.DOWN) {
+                viewModel.cycleLevel()
+            }
+        Screen.PAUSED, Screen.OVER -> Unit
     }
 }
 
@@ -205,84 +212,5 @@ private fun SteeringControls(
         strokes = pauseStrokes(controls.pause, metrics),
         label = stringResource(R.string.pause),
         onClick = viewModel::pauseGame,
-    )
-}
-
-@Composable
-private fun StartMenu(
-    screenSize: Int,
-    board: Board,
-    menu: MenuMetrics,
-    state: SerpentUiState,
-    viewModel: SerpentViewModel,
-) {
-    MenuOverlay(
-        screenSize = screenSize,
-        board = board,
-        metrics = menu,
-        items =
-            listOf(
-                MenuItem.Line(menu.big, ColorText, stringResource(R.string.title)),
-                MenuItem.Gap(menu.gap),
-                MenuItem.Line(menu.row, ColorMuted, stringResource(R.string.best_value, state.best)),
-                MenuItem.Gap(menu.gap),
-                MenuItem.Line(menu.small, ColorMuted, stringResource(R.string.speed)),
-                MenuItem.Action(menu.button, stringResource(state.level.labelRes), viewModel::cycleLevel),
-                MenuItem.Gap(menu.gap),
-                MenuItem.Action(menu.button, stringResource(R.string.play), viewModel::startGame),
-                MenuItem.Line(menu.small, ColorMuted, stringResource(R.string.hint)),
-            ),
-    )
-}
-
-@Composable
-private fun PausedMenu(
-    screenSize: Int,
-    board: Board,
-    menu: MenuMetrics,
-    viewModel: SerpentViewModel,
-) {
-    MenuOverlay(
-        screenSize = screenSize,
-        board = board,
-        metrics = menu,
-        items =
-            listOf(
-                MenuItem.Line(menu.big, ColorText, stringResource(R.string.paused)),
-                MenuItem.Gap(menu.gap),
-                MenuItem.Action(menu.button, stringResource(R.string.resume), viewModel::resumeGame),
-            ),
-    )
-}
-
-@Composable
-private fun GameOverMenu(
-    screenSize: Int,
-    board: Board,
-    menu: MenuMetrics,
-    state: SerpentUiState,
-    viewModel: SerpentViewModel,
-) {
-    MenuOverlay(
-        screenSize = screenSize,
-        board = board,
-        metrics = menu,
-        items =
-            listOf(
-                MenuItem.Line(menu.big, ColorText, stringResource(R.string.game_over)),
-                MenuItem.Gap(menu.gap),
-                MenuItem.Line(menu.row, ColorText, stringResource(R.string.score_value, state.score)),
-                MenuItem.Line(
-                    menu.row,
-                    if (state.isRecord) ColorFood else ColorMuted,
-                    if (state.isRecord) {
-                        stringResource(R.string.new_best)
-                    } else {
-                        stringResource(R.string.best_value, state.best)
-                    },
-                ),
-                MenuItem.Gap(menu.gap),
-                MenuItem.Action(menu.button, stringResource(R.string.again), viewModel::showStart),
-            ),
     )
 }
