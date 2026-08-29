@@ -280,6 +280,10 @@ class SerpentViewModelTest {
 
             assertEquals(Screen.START, model.uiState.value.screen)
             assertFalse(model.uiState.value.isRecord)
+            // The board goes with it, or the wreck of the last game sits behind
+            // the start menu looking like a game already in progress.
+            assertTrue(model.uiState.value.snake.isEmpty())
+            assertEquals(null, model.uiState.value.food)
         }
 
     @Test
