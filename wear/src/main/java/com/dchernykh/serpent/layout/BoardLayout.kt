@@ -7,6 +7,13 @@ import kotlin.math.sqrt
 // pixels. Pure, so it is unit tested; the screen turns these boxes into paint.
 
 /**
+ * How many cells the board is across. Fifteen gives roughly 21px cells on a 466px
+ * screen: chunky enough to read at a glance on a wrist, and a board long enough
+ * that a good game lasts.
+ */
+const val GRID_CELLS = 15
+
+/**
  * The board: [cell] pixels a side, [cells] of them across, occupying a [size]
  * square whose top left corner is at ([x], [y]).
  */

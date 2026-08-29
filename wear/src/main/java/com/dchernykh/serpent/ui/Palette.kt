@@ -9,9 +9,6 @@ import androidx.compose.ui.graphics.Color
 // colour but pixels that are switched off, which is why a watch game is dark and
 // not merely fashionably so.
 
-/** Cells across the inscribed square. Fifteen gives roughly 21px cells at 466. */
-const val GRID_CELLS = 15
-
 /** Pixels trimmed off each side of a cell so the body reads as segments. */
 const val CELL_INSET = 1
 

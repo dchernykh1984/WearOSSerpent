@@ -5,8 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.dchernykh.serpent.layout.GRID_CELLS
 import com.dchernykh.serpent.store.DataStoreRecordStore
-import com.dchernykh.serpent.ui.GRID_CELLS
 import com.dchernykh.serpent.ui.SerpentApp
 
 /**

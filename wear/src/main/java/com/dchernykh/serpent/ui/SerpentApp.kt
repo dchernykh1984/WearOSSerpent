@@ -27,6 +27,7 @@ import com.dchernykh.serpent.SerpentViewModel
 import com.dchernykh.serpent.game.Direction
 import com.dchernykh.serpent.layout.Board
 import com.dchernykh.serpent.layout.Controls
+import com.dchernykh.serpent.layout.GRID_CELLS
 import com.dchernykh.serpent.layout.arrowMetrics
 import com.dchernykh.serpent.layout.arrowStrokes
 import com.dchernykh.serpent.layout.boardLayout
