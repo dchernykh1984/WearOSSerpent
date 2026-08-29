@@ -140,15 +140,19 @@ kover {
     }
 }
 
-// Pin transitive dependency versions for reproducible builds. Only the shipped
-// and unit-test runtime classpaths are locked (Android's internal configurations
-// are intentionally left out). Regenerate wear/gradle.lockfile with the
-// "Update lockfiles" workflow or `./gradlew :wear:dependencies --write-locks`.
+// Pin transitive dependency versions for reproducible builds. Every classpath
+// that either ships or gates a merge is locked; Android's internal configurations
+// are intentionally left out. The instrumented one is in the list because the
+// emulator run is a required check: an unannounced androidx.test bump that breaks
+// it would otherwise fail a pull request that changed nothing.
+// Regenerate wear/gradle.lockfile with the "Update lockfiles" workflow or
+// `./gradlew :wear:dependencies --write-locks`.
 listOf(
     "debugRuntimeClasspath",
     "releaseRuntimeClasspath",
     "debugUnitTestRuntimeClasspath",
     "releaseUnitTestRuntimeClasspath",
+    "debugAndroidTestRuntimeClasspath",
 ).forEach { configurationName ->
     configurations.matching { it.name == configurationName }.configureEach {
         resolutionStrategy.activateDependencyLocking()
