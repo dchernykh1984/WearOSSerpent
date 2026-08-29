@@ -54,6 +54,9 @@ jobs:
 
   android:
     runs-on: ubuntu-latest
+    # The Gradle gate takes a few minutes; anything approaching this is a hung
+    # daemon or a download that will never arrive, not a slow build.
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-java@v5.7.0
