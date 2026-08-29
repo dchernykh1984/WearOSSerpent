@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.layout
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Constraints
@@ -63,11 +64,15 @@ fun StrokeControl(
         modifier =
             modifier
                 .absoluteBox(box)
+                // The control is a drawing, so the description is all a screen
+                // reader has to go on. The role is what tells it this one can be
+                // pressed; naming the action as well would have it read the label
+                // twice over.
                 .semantics { contentDescription = label }
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    onClickLabel = label,
+                    role = Role.Button,
                     onClick = onClick,
                 ),
     ) {

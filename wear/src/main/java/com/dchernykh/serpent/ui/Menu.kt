@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.wear.compose.material3.Text
 import com.dchernykh.serpent.layout.BOARD_EDGE
@@ -135,6 +136,9 @@ private fun MenuButton(
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
+                    // Without the role a screen reader reads the label as plain
+                    // text, and nothing tells the listener it can be pressed.
+                    role = Role.Button,
                     onClick = onClick,
                 ),
         contentAlignment = Alignment.Center,
