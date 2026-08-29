@@ -15,6 +15,7 @@ import com.dchernykh.serpent.game.turned
 import com.dchernykh.serpent.game.updateBest
 import com.dchernykh.serpent.store.RecordStore
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
 /** Which of the four screens is in front. */
@@ -178,7 +180,12 @@ class SerpentViewModel(
      */
     private suspend fun finish(finished: GameState) {
         val outcome = updateBest(_uiState.value.best, finished.score)
-        if (outcome.isRecord) store.writeBest(_uiState.value.level, outcome.best)
+        // Not cancellable. The app being closed the instant a game ends is exactly
+        // when a record is worth keeping, and a write abandoned half way through
+        // loses it for good.
+        if (outcome.isRecord) {
+            withContext(NonCancellable) { store.writeBest(_uiState.value.level, outcome.best) }
+        }
         _uiState.update {
             it.copy(screen = Screen.OVER, best = outcome.best, isRecord = outcome.isRecord)
         }
