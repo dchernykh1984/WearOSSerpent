@@ -58,7 +58,8 @@ wear/                                  the one module: the watch app is the prod
   src/main/AndroidManifest.xml         watch-only, standalone, no permissions
   src/main/java/com/dchernykh/serpent/
     MainActivity.kt                    the single activity
-  src/main/res/values*/strings.xml     the screen strings, one table per language
+  src/main/res/values*/strings.xml     the screen strings, a table per language
+  src/main/res/xml/                    what backup and device transfer may take
   src/main/res/mipmap-*/               the adaptive launcher icon
   src/test/                            JVM unit tests - the rules and the geometry
   src/androidTest/                     instrumented tests - what needs a real device
@@ -66,11 +67,12 @@ config/detekt/detekt.yml               static-analysis overrides
 gradle/libs.versions.toml              every dependency and plugin version
 ```
 
-Everything a test can reach without a device is deliberately kept out of the Compose
-layer: the rule set, the pacing, the record decision and the round-screen geometry
-are plain Kotlin classes, and `koverVerify` holds them to a coverage floor. The
-Compose screens and the record store are excluded from that floor and covered by the
-instrumented tests instead, because one needs a composition and the other a Context.
+The rule that shapes it: anything a test can reach without a device - the rule set,
+the pacing, the record decision, the round-screen geometry - is a plain Kotlin class
+outside the Compose layer, and `koverVerify` holds it to a coverage floor. Only what
+genuinely needs a device is exempt from that floor, and each exemption is written
+down where it is made, with the instrumented test that covers it instead. (The floor
+is 0 until the game itself lands; there is nothing here yet to hold up.)
 
 ## Pre-commit hooks (contributors)
 
