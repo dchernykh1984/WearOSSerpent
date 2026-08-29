@@ -24,6 +24,9 @@ concurrency:
 jobs:
   connected:
     runs-on: ubuntu-latest
+    # An emulator that never finishes booting produces no output at all, and
+    # without a limit the job sits there until the six-hour default kills it.
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
