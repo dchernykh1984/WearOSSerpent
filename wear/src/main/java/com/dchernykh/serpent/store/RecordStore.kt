@@ -2,14 +2,18 @@ package com.dchernykh.serpent.store
 
 import android.content.Context
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.dchernykh.serpent.game.SpeedLevel
 import com.dchernykh.serpent.game.normalizeScore
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import java.io.IOException
 
 /**
  * What survives closing the app: the difficulty last played, and one best score
@@ -46,6 +50,13 @@ private fun bestKey(level: SpeedLevel) = intPreferencesKey("best_${level.name}")
  * for a record at two moments it chooses - opening the start screen and finishing
  * a game - and nothing else on the watch writes these keys, so there is no later
  * value to wait for.
+ *
+ * Storage that has gone wrong must not stop anyone playing. A DataStore whose file
+ * is unreadable throws on every read and every write, and a game that would not
+ * start because a preferences file was corrupt is far worse than one that forgets
+ * a best score. So a failed read reads as nothing stored and a failed write is
+ * dropped; the score for the game in front of you lives in the view model either
+ * way, and only outlives the app when the disk lets it.
  */
 class DataStoreRecordStore(
     context: Context,
@@ -54,18 +65,30 @@ class DataStoreRecordStore(
     // screen, and holding the activity here would leak it for the life of the app.
     private val dataStore = context.applicationContext.recordDataStore
 
-    override suspend fun readLevel(): SpeedLevel = SpeedLevel.fromStoredName(dataStore.data.first()[LEVEL_KEY])
+    private suspend fun read(): Preferences =
+        dataStore.data
+            .catch { cause ->
+                // Only I/O. Anything else is a bug in this file rather than a
+                // broken disk, and swallowing it would hide it.
+                if (cause is IOException) emit(emptyPreferences()) else throw cause
+            }.first()
 
-    override suspend fun writeLevel(level: SpeedLevel) {
-        dataStore.edit { it[LEVEL_KEY] = level.name }
+    private suspend fun write(change: (MutablePreferences) -> Unit) {
+        try {
+            dataStore.edit(change)
+        } catch (_: IOException) {
+            // Nothing to do and nothing worth saying: the game carries on.
+        }
     }
 
-    override suspend fun readBest(level: SpeedLevel): Int = normalizeScore(dataStore.data.first()[bestKey(level)])
+    override suspend fun readLevel(): SpeedLevel = SpeedLevel.fromStoredName(read()[LEVEL_KEY])
+
+    override suspend fun writeLevel(level: SpeedLevel) = write { it[LEVEL_KEY] = level.name }
+
+    override suspend fun readBest(level: SpeedLevel): Int = normalizeScore(read()[bestKey(level)])
 
     override suspend fun writeBest(
         level: SpeedLevel,
         best: Int,
-    ) {
-        dataStore.edit { it[bestKey(level)] = normalizeScore(best) }
-    }
+    ) = write { it[bestKey(level)] = normalizeScore(best) }
 }
