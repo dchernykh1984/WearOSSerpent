@@ -33,11 +33,17 @@ jobs:
           - name: watch-round
             profile: wearos_large_round
             api-level: 34
+            arch: x86_64
           # The oldest platform the app supports. The layout maths is the same on
-          # both, but the Compose and DataStore runtimes are not.
+          # both, but the Compose runtime and the record store are not.
+          #
+          # x86, not x86_64: Google only ever published a 32-bit Intel image for
+          # Wear OS 3 (`system-images;android-30;android-wear;x86`), so asking for
+          # x86_64 here fails before the emulator is even created.
           - name: watch-round-min
             profile: wearos_small_round
             api-level: 30
+            arch: x86
     name: ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v7
@@ -62,7 +68,7 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           target: android-wear
-          arch: x86_64
+          arch: ${{ matrix.arch }}
           profile: ${{ matrix.profile }}
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
