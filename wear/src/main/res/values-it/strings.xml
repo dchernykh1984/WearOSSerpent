@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Serpente</string>
+    <string name="score_value">Punti %1$d</string>
+    <string name="best_value">Record %1$d</string>
+    <string name="play">Gioca</string>
+    <string name="resume">Riprendi</string>
+    <string name="again">Ancora</string>
+    <string name="paused">In pausa</string>
+    <string name="game_over">Fine gioco</string>
+    <string name="new_best">Nuovo record</string>
+    <string name="speed">Velocità</string>
+    <string name="speed_slow">Lenta</string>
+    <string name="speed_normal">Normale</string>
+    <string name="speed_fast">Veloce</string>
+    <string name="hint">Scorri o frecce</string>
+    <string name="steer_up">Su</string>
+    <string name="steer_down">Giù</string>
+    <string name="steer_left">Sinistra</string>
+    <string name="steer_right">Destra</string>
+    <string name="pause">Pausa</string>
+</resources>

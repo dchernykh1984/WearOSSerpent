@@ -8,6 +8,27 @@ This is a port of [AmazfitSerpent](https://github.com/dchernykh1984/AmazfitSerpe
 the same game as a Zepp OS mini app. The rules, the pacing, the layout proportions
 and the eleven translations are carried over unchanged; the implementation is new.
 
+## Playing it
+
+- **Board** - a 15x15 grid inscribed in the round screen, with the score in the cap
+  above it and the pause control in the cap below.
+- **Controls** - four **arrows** in the segments around the board, which on a round
+  watch are dead space the board can never use; or **swipe** anywhere to turn. A
+  reversal into your own neck is refused rather than fatal. **Back** during a game
+  pauses rather than leaving, so a hard turn cannot cost you the run; from a menu it
+  steps back, and from the start screen it closes the app as usual.
+- **Difficulty** - Slow, Normal or Fast, picked on the start screen. Whichever level
+  you played last is the one that opens next time. The snake also creeps faster as it
+  grows, down to a floor per level.
+- **High score** - kept per difficulty, so beating your record on Fast means
+  something. A game that scored nothing never counts as a record.
+- **A perfect game** - filling every cell of the board is a win, not a crash.
+- **Languages** - English, Russian, German, French, Italian, Spanish, Portuguese,
+  Dutch, Polish, Czech and Kazakh. The watch's own language is followed, and all
+  eleven are offered individually in the system per-app language list - so Kazakh,
+  which Zepp OS had no device-language code for and could never select, finally
+  reaches the people it was translated for.
+
 ## Devices
 
 Round watches, **Wear OS 3 (API 30) and newer**. Built and tested against a
@@ -58,9 +79,20 @@ wear/                                  the one module: the watch app is the prod
   src/main/AndroidManifest.xml         watch-only, standalone, no permissions
   src/main/java/com/dchernykh/serpent/
     MainActivity.kt                    the single activity
+    SerpentViewModel.kt                the state the screen draws, and the tick loop
+    game/Snake.kt                      the rules: movement, growth, collisions, food
+    game/SpeedLevel.kt                 the difficulty levels and the tick pacing
+    game/Records.kt                    what counts as a record
+    layout/RoundGeometry.kt            chord maths that keeps content off the bezel
+    layout/BoardLayout.kt              the grid inscribed in the round screen
+    layout/ControlLayout.kt            where the arrows and the score sit around it
+    layout/Arrow.kt                    the control icons, as line segments
+    store/RecordStore.kt               the records, on Preferences DataStore
+    ui/                                the Compose screens
   src/main/res/values*/strings.xml     the screen strings, a table per language
   src/main/res/xml/                    what backup and device transfer may take
   src/main/res/mipmap-*/               the adaptive launcher icon
+tools/make-launcher-icons.sh           regenerates that icon from the Zepp OS one
   src/test/                            JVM unit tests - the rules and the geometry
   src/androidTest/                     instrumented tests - what needs a real device
 config/detekt/detekt.yml               static-analysis overrides
@@ -71,8 +103,8 @@ The rule that shapes it: anything a test can reach without a device - the rule s
 the pacing, the record decision, the round-screen geometry - is a plain Kotlin class
 outside the Compose layer, and `koverVerify` holds it to a coverage floor. Only what
 genuinely needs a device is exempt from that floor, and each exemption is written
-down where it is made, with the instrumented test that covers it instead. (The floor
-is 0 until the game itself lands; there is nothing here yet to hold up.)
+down where it is made, with the instrumented test that covers it instead. The floor
+is 80; the suite currently sits at 97%.
 
 ## Pre-commit hooks (contributors)
 

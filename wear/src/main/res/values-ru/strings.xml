@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="title">Змейка</string>
+    <string name="score_value">Счёт %1$d</string>
+    <string name="best_value">Рекорд %1$d</string>
+    <string name="play">Играть</string>
+    <string name="resume">Дальше</string>
+    <string name="again">Заново</string>
+    <string name="paused">Пауза</string>
+    <string name="game_over">Конец игры</string>
+    <string name="new_best">Новый рекорд</string>
+    <string name="speed">Скорость</string>
+    <string name="speed_slow">Медленно</string>
+    <string name="speed_normal">Обычно</string>
+    <string name="speed_fast">Быстро</string>
+    <string name="hint">Свайп или стрелки</string>
+    <string name="steer_up">Вверх</string>
+    <string name="steer_down">Вниз</string>
+    <string name="steer_left">Влево</string>
+    <string name="steer_right">Вправо</string>
+    <string name="pause">Пауза</string>
+</resources>
